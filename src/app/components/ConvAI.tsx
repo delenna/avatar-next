@@ -11,6 +11,7 @@ import Hashids from "hashids";
 import dayjs from "dayjs";
 import { encryptor } from "@/app/lib/utils";
 import ModalComponent from "./ui/modal";
+import { log } from "console";
 
 async function requestMicrophonePermission() {
     try {
@@ -76,7 +77,7 @@ function handleMessage(data: any) {
 }
 
 export function ConvAI() {
-    const socket =  useSocket();
+    const { socket, newMessage } = useSocket();
     const [conversation, setConversation] = useState<Conversation | null>(null)
     const [isConnected, setIsConnected] = useState(false)
     const [isSpeaking, setIsSpeaking] = useState(false)
@@ -110,7 +111,7 @@ export function ConvAI() {
         })
         setConversation(conversation)
 
-        const register = await registerUser()
+        // const register = await registerUser()
     }
 
     async function endConversation() {
@@ -121,33 +122,53 @@ export function ConvAI() {
         setConversation(null)
     }
 
+    // useEffect(() => {
+    //     console.log('socket', socket)
+    //     if (!socket) return;
+
+    //     socket.on("connect_error", () => {
+    //         console.log("connect_error")
+    //     });
+
+    //     socket.on("disconnect", () => {
+    //         console.log("disconnect")
+    //     });
+
+    //     socket.on('connected', () => {
+    //         console.log('connected')
+    //     })
+
+    //     // socket.on('NewMessage', (message) => {
+    //     //     console.log('Received message:', message)
+    //     //     // handleMessage(message)
+    //     //     const url = message.message.content[0].text.match(/https:\/\/\S+/)?.[0]
+    //     //     console.log('url', url)
+    //     //     if (url && url != '') {
+    //     //         // window.open(url, '_blank')
+    //     //         setVideoUrl(url)
+    //     //         setIsOpen(true)
+    //     //     }
+    //     // });
+
+    //     return () => {
+    //         if (socket) {
+    //             socket.off("newMessage");
+    //             socket.disconnect();
+    //         }
+    //     };
+    // }, [socket])
+
     useEffect(() => {
-        if (!socket) return;
-
-        socket.on("connect_error", () => {
-            console.log("connect_error")
-        });
-
-        socket.on('connected', () => {
-            console.log('connected')
-        })
-
-        socket.on('NewMessage', (message) => {
-            console.log('Received message:', message)
-            // handleMessage(message)
-            const url = message.message.content[0].text.match(/https:\/\/\S+/)?.[0]
-            console.log('url', url)
-            if (url && url != '') {
-                // window.open(url, '_blank')
-                setVideoUrl(url)
-                setIsOpen(true)
-            }
-        });
+        if (newMessage) {
+            console.log('newMessage', newMessage)
+        }
 
         return () => {
-            socket.off("message");
+            if (socket) {
+                socket.off("message");
+            }
         };
-    }, [socket])
+    }, [newMessage])
 
     return (
         <div className={"flex justify-center items-center gap-x-4"}>
