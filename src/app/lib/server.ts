@@ -2,7 +2,7 @@
 import Hashids from "hashids";
 import dayjs from "dayjs";
 import API from "./api";
-import { encryptor } from "./utils";
+// import { encryptor } from "./utils";
 
 const OMNICHANNEL_URL = "https://staging.lenna.ai";
 export async function registerUser(): Promise<object> {
@@ -40,7 +40,7 @@ export async function registerUser(): Promise<object> {
           cred,
           email: user?.email?.toLowerCase(),
           expiredAt,
-          name: encryptor(user.name)
+        //   name: encryptor(user.name)
         };
       
         return obj;

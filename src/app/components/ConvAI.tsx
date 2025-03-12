@@ -2,16 +2,15 @@
 
 import {Button} from "@/app/components/ui/button";
 import * as React from "react";
-import {useState, useEffect} from "react";
+import {useState,useEffect} from "react";
 import {Card, CardContent, CardHeader, CardTitle} from "@/app/components/ui/card";
 import {Conversation} from "@11labs/client";
 import {cn} from "@/app/lib/utils";
 import { useSocket } from "../hooks/useSocket";
 import Hashids from "hashids";
 import dayjs from "dayjs";
-import { encryptor } from "@/app/lib/utils";
+// import { encryptor } from "@/app/lib/utils";
 import ModalComponent from "./ui/modal";
-import { log } from "console";
 
 async function requestMicrophonePermission() {
     try {
@@ -32,7 +31,7 @@ async function getSignedUrl(): Promise<string> {
     return data.signedUrl
 }
 
-async function registerUser() {
+async function registerUser(name: string, phone: string) {
     const hashids = new Hashids("", 6);
 
     const res = await fetch('/api/register', {
@@ -41,9 +40,9 @@ async function registerUser() {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-            name: `avatar-${Date.now()}`,
-            phone: Date.now(),
-            email: `${Date.now()}@gmail.com`,
+            name: name,
+            phone: phone,
+            email: `${Date.now()}@avatar.com`,
         }),
     });
 
@@ -60,29 +59,37 @@ async function registerUser() {
       cred,
       email: user?.email?.toLowerCase(),
       expiredAt,
-      name: encryptor(user.name)
+    //   name: encryptor(user.name)
     };
   
     localStorage.setItem("avatar_user", JSON.stringify(obj));
     console.log("Response:", data);
 }
 
-function handleMessage(data: any) {
-    console.log("handle message", data)
-    // if (data.message && data.message.content.length && data.message.content.type === 'text' && data.message.content[0].text.includes('lenna.ai/call')) {
-        const url = data.message.content[0].text.match(/https:\/\/\S+/)?.[0]
-        console.log('url', url)
-        window.open(url, '_blank', 'noopener,noreferrer')
-    // }
+async function sendMessage() {
+
+    const rawUser = JSON.parse(localStorage.getItem("avatar_user") || "{}");
+
+    const res = await fetch('/api/message', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(rawUser)
+    })
+
+    const data = await res.json();
+    console.log('data', data)
 }
 
 export function ConvAI() {
-    const { socket, newMessage } = useSocket();
+    const socket = useSocket();
     const [conversation, setConversation] = useState<Conversation | null>(null)
     const [isConnected, setIsConnected] = useState(false)
     const [isSpeaking, setIsSpeaking] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
     const [videoUrl, setVideoUrl] = useState("")
+    // const [isAgent, setIsAgent] = useState(false)
 
     async function startConversation() {
         const hasPermission = await requestMicrophonePermission()
@@ -108,6 +115,14 @@ export function ConvAI() {
             onModeChange: ({mode}) => {
                 setIsSpeaking(mode === 'speaking')
             },
+            clientTools: {
+                async escalate_to_agent(message) {
+                    console.log('escalate_to_agent', message)
+                    await registerUser(message.name, message.phone)
+
+                    await sendMessage() 
+                }
+            }
         })
         setConversation(conversation)
 
@@ -122,53 +137,41 @@ export function ConvAI() {
         setConversation(null)
     }
 
-    // useEffect(() => {
-    //     console.log('socket', socket)
-    //     if (!socket) return;
-
-    //     socket.on("connect_error", () => {
-    //         console.log("connect_error")
-    //     });
-
-    //     socket.on("disconnect", () => {
-    //         console.log("disconnect")
-    //     });
-
-    //     socket.on('connected', () => {
-    //         console.log('connected')
-    //     })
-
-    //     // socket.on('NewMessage', (message) => {
-    //     //     console.log('Received message:', message)
-    //     //     // handleMessage(message)
-    //     //     const url = message.message.content[0].text.match(/https:\/\/\S+/)?.[0]
-    //     //     console.log('url', url)
-    //     //     if (url && url != '') {
-    //     //         // window.open(url, '_blank')
-    //     //         setVideoUrl(url)
-    //     //         setIsOpen(true)
-    //     //     }
-    //     // });
-
-    //     return () => {
-    //         if (socket) {
-    //             socket.off("newMessage");
-    //             socket.disconnect();
-    //         }
-    //     };
-    // }, [socket])
-
     useEffect(() => {
-        if (newMessage) {
-            console.log('newMessage', newMessage)
-        }
+        console.log('socket', socket)
+        if (!socket) return;
+
+        socket.on("connect_error", () => {
+            console.log("connect_error")
+        });
+
+        socket.on("disconnect", () => {
+            console.log("disconnect")
+        });
+
+        socket.on('connected', () => {
+            console.log('connected')
+        })
+
+        socket.on('NewMessage', (message) => {
+            console.log('Received message:', message)
+            // handleMessage(message)
+            const url = message.message.content[0].text.match(/https:\/\/\S+/)?.[0]
+            console.log('url', url)
+            if (url && url != '') {
+                // window.open(url, '_blank')
+                setVideoUrl(url)
+                setIsOpen(true)
+            }
+        });
 
         return () => {
             if (socket) {
-                socket.off("message");
+                socket.off("newMessage");
+                socket.disconnect();
             }
         };
-    }, [newMessage])
+    }, [socket])
 
     return (
         <div className={"flex justify-center items-center gap-x-4"}>
