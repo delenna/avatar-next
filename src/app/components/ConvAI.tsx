@@ -79,7 +79,7 @@ async function sendMessage() {
     })
 
     const data = await res.json();
-    console.log('data', data)
+    console.log('datas', data)
 }
 
 export function ConvAI() {
