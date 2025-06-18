@@ -8,8 +8,8 @@ interface AudioVisualizerProps {
 
 export default function AudioVisualizer({ stream }: AudioVisualizerProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
-  const analyserRef = useRef<AnalyserNode>()
+  const animationRef = useRef<number>(0)
+  const analyserRef = useRef<AnalyserNode>(null)
 
   useEffect(() => {
     if (!canvasRef.current || !stream) return
@@ -38,7 +38,7 @@ export default function AudioVisualizer({ stream }: AudioVisualizerProps) {
     window.addEventListener("resize", setCanvasSize)
 
     // Store bubbles
-    const bubbles = []
+    const bubbles: any[] = []
     const maxBubbles = 15 // Maximum number of bubbles
 
     // Animation function
