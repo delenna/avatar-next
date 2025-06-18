@@ -23,7 +23,20 @@ async function requestMicrophonePermission() {
 }
 
 async function getSignedUrl(): Promise<string> {
-    const response = await fetch('/api/signed-url')
+    const urlParams = new URLSearchParams(window.location.search);
+    let agentId = '';
+    if (urlParams.get('usecase') == 'billing') {
+        agentId = process.env.NEXT_PUBLIC_REMINDER_AGENT_ID || ''
+    } else {
+        agentId = process.env.NEXT_PUBLIC_CONVERSATION_AGENT_ID || ''
+    }
+    console.log('agentId', agentId)
+
+    await updateAgent(agentId, urlParams.get('sound') || '')
+
+    const params = new URLSearchParams();
+    params.append("agentId", agentId || "");
+    const response = await fetch(`/api/signed-url?${params.toString()}`)
     if (!response.ok) {
         throw Error('Failed to get signed url')
     }
@@ -31,7 +44,7 @@ async function getSignedUrl(): Promise<string> {
     return data.signedUrl
 }
 
-async function registerUser(name: string, phone: string) {
+async function registerUser(name: string, phone: string | null) {
     const hashids = new Hashids("", 6);
 
     const res = await fetch('/api/register', {
@@ -80,6 +93,28 @@ async function sendMessage() {
 
     const data = await res.json();
     console.log('datas', data)
+}
+
+async function updateAgent(agentId: string, sound: string) {
+    // Update agent (PATCH /v1/convai/agents/:agent_id)
+    const voiceId = sound == 'man' ? 'lFjzhZHq0NwTRiu2GQxy' : 'iWydkXKoiVtvdn4vLKp9';
+    const response = await fetch("https://api.elevenlabs.io/v1/convai/agents/"+agentId, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "xi-api-key": process.env.NEXT_PUBLIC_XI_API_KEY || '',
+        },
+        body: JSON.stringify({
+            "conversation_config": {
+                "tts": {
+                    "voice_id": voiceId
+                }
+            }
+        }),
+    });
+    
+    const body = await response.json();
+    console.log(body);
 }
 
 export function ConvAI() {

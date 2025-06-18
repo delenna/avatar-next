@@ -1,13 +1,18 @@
 import {NextResponse} from "next/server";
 
-export async function GET() {
-    const agentId = process.env.AGENT_ID
-    const apiKey = process.env.XI_API_KEY
+
+export async function GET(request: Request) {
+    // Get the query parameters from the request URL
+    const { searchParams } = new URL(request.url);
+    // Get the agentId from query params or fall back to environment variable
+    const agentId = searchParams.get('agentId') || process.env.AGENT_ID;
+    const apiKey = process.env.NEXT_PUBLIC_XI_API_KEY;
+    
     if (!agentId) {
-        throw Error('AGENT_ID is not set')
+        throw new Error('AGENT_ID is not provided in the request or environment variables');
     }
     if (!apiKey) {
-        throw Error('XI_API_KEY is not set')
+        throw new Error('XI_API_KEY is not set in environment variables');
     }
     try {
         const response = await fetch(

@@ -11,7 +11,12 @@
   "dependencies": {
     "@11labs/react": "^0.0.7",
     "@headlessui/react": "^2.2.0",
-    "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-radio-group": "^1.3.7",
+    "@radix-ui/react-slot": "^1.2.3",
+    "@redux-devtools/extension": "^3.3.0",
+    "@supabase/ssr": "^0.6.1",
+    "@supabase/supabase-js": "^2.49.10",
     "@tanstack/react-query": "^5.67.2",
     "axios": "^1.8.2",
     "class-variance-authority": "^0.7.0",
@@ -19,6 +24,7 @@
     "cors": "^2.8.5",
     "dayjs": "^1.11.13",
     "dotenv": "^16.4.5",
+    "elevenlabs": "^1.59.0",
     "framer-motion": "^11.11.11",
     "hashids": "^2.3.0",
     "lucide-react": "^0.454.0",
@@ -27,7 +33,8 @@
     "react-dom": "^19.0.0",
     "socket.io-client": "^4.8.1",
     "tailwind-merge": "^2.5.4",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zustand": "^5.0.5"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
