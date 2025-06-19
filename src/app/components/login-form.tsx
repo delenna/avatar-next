@@ -1,3 +1,4 @@
+'use client'
 import { cn } from "@/app/lib/utils"
 import { Button } from "./ui/button"
 import {
