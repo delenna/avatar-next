@@ -10,11 +10,13 @@ import {
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
 import { login, signup } from "../login/action"
+import { useState } from "react"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+    const [loading, setLoading] = useState(false)
   return (
     <div className={cn("w-full max-w-md mx-auto p-4 sm:p-0", className)} {...props}>
       <Card className="border border-gray-200 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-900">
@@ -46,12 +48,12 @@ export function LoginForm({
                 <Label htmlFor="password" className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Password
                 </Label>
-                <a
+                {/* <a
                   href="#"
                   className="text-sm text-blue-600 hover:underline dark:text-blue-400"
                 >
                   Forgot password?
-                </a>
+                </a> */}
               </div>
               <Input
                 id="password"
@@ -63,13 +65,15 @@ export function LoginForm({
             </div>
             <div className="space-y-3 pt-2">
               <Button 
+                disabled={loading}
                 type="submit" 
-                formAction={login} 
+                formAction={login}
+                onClick={() => setLoading(true)} 
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:ring-offset-gray-900"
               >
                 Sign in
               </Button>
-              <div className="relative my-4">
+              {/* <div className="relative my-4">
                 <div className="absolute inset-0 flex items-center">
                   <span className="w-full border-t border-gray-300 dark:border-gray-600"></span>
                 </div>
@@ -86,7 +90,7 @@ export function LoginForm({
                 className="w-full border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800"
               >
                 Create an account
-              </Button>
+              </Button> */}
             </div>
           </form>
         </CardContent>

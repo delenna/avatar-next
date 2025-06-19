@@ -124,9 +124,11 @@ export function ConvAI() {
     const [isSpeaking, setIsSpeaking] = useState(false)
     const [isOpen, setIsOpen] = useState(false)
     const [videoUrl, setVideoUrl] = useState("")
+    const [loading, setLoading] = useState(false)
     // const [isAgent, setIsAgent] = useState(false)
 
     async function startConversation() {
+        setLoading(true)
         const hasPermission = await requestMicrophonePermission()
         if (!hasPermission) {
             alert("No permission")
@@ -160,7 +162,7 @@ export function ConvAI() {
             }
         })
         setConversation(conversation)
-
+        setLoading(false)
         // const register = await registerUser()
     }
 
@@ -170,6 +172,7 @@ export function ConvAI() {
         }
         await conversation.endSession()
         setConversation(null)
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -232,7 +235,7 @@ export function ConvAI() {
                             variant={'outline'}
                             className={'rounded-full'}
                             size={"lg"}
-                            disabled={conversation !== null && isConnected}
+                            disabled={(conversation !== null && isConnected) || loading}
                             onClick={startConversation}
                         >
                             Start conversation
@@ -241,7 +244,7 @@ export function ConvAI() {
                             variant={'outline'}
                             className={'rounded-full'}
                             size={"lg"}
-                            disabled={conversation === null && !isConnected}
+                            disabled={(conversation === null && !isConnected) || loading}
                             onClick={endConversation}
                         >
                             End conversation
