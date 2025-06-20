@@ -107,7 +107,7 @@ export default function SpeechTranscription() {
   const startRecording = async () => {
     await updateAgent();
     try {
-      const ws = new window.WebSocket("ws://localhost:8000/ws")
+      const ws = new window.WebSocket(process.env.NEXT_PUBLIC_TRANSCRIPT_API_WS || '')
       ws.binaryType = 'arraybuffer'
       wsRef.current = ws
       setTranscript([])
