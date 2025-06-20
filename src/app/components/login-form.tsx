@@ -1,4 +1,3 @@
-'use client'
 import { cn } from "@/app/lib/utils"
 import { Button } from "./ui/button"
 import {
@@ -10,14 +9,12 @@ import {
 } from "./ui/card"
 import { Input } from "./ui/input"
 import { Label } from "./ui/label"
-import { login, signup } from "../login/action"
-import { useState } from "react"
+import { login } from "../login/action"
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-    const [loading, setLoading] = useState(false)
   return (
     <div className={cn("w-full max-w-md mx-auto p-4 sm:p-0", className)} {...props}>
       <Card className="border border-gray-200 dark:border-gray-700 shadow-lg bg-white dark:bg-gray-900">
@@ -66,10 +63,8 @@ export function LoginForm({
             </div>
             <div className="space-y-3 pt-2">
               <Button 
-                disabled={loading}
                 type="submit" 
                 formAction={login}
-                onClick={() => setLoading(true)} 
                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:ring-offset-gray-900"
               >
                 Sign in
