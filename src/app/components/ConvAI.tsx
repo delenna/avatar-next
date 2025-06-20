@@ -32,7 +32,7 @@ async function getSignedUrl(): Promise<string> {
     }
     console.log('agentId', agentId)
 
-    await updateAgent(agentId, urlParams.get('sound') || '')
+    await updateAgent(agentId, urlParams.get('voice') || '')
 
     const params = new URLSearchParams();
     params.append("agentId", agentId || "");
@@ -95,9 +95,8 @@ async function sendMessage() {
     console.log('datas', data)
 }
 
-async function updateAgent(agentId: string, sound: string) {
+async function updateAgent(agentId: string, voiceId: string) {
     // Update agent (PATCH /v1/convai/agents/:agent_id)
-    const voiceId = sound == 'man' ? 'lFjzhZHq0NwTRiu2GQxy' : 'iWydkXKoiVtvdn4vLKp9';
     const response = await fetch("https://api.elevenlabs.io/v1/convai/agents/"+agentId, {
         method: "PATCH",
         headers: {

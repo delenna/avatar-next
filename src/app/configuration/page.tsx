@@ -15,6 +15,7 @@ export default function ConfigurationPage() {
     aiType: "",
     sound: "",
     usecase: "",
+    voice: "",
   })
   // const configStore = useConfigurationStore()
 
@@ -33,7 +34,7 @@ export default function ConfigurationPage() {
     // }
   }
 
-  const isConfigComplete = config.aiType && config.sound && config.usecase
+  const isConfigComplete = config.aiType && config.usecase
 
   const handleContinue = () => {
     if (!isConfigComplete) return
@@ -43,6 +44,7 @@ export default function ConfigurationPage() {
       aiType: config.aiType,
       sound: config.sound,
       usecase: config.usecase,
+      voice: config.voice,
     })
 
     // Route to appropriate agent page based on AI type
@@ -96,7 +98,7 @@ export default function ConfigurationPage() {
           </div>
 
           {/* Sound Selection */}
-          <div className="space-y-4">
+          <div className="space-y-4" style={{ display: config.aiType === "smart" ? "block" : "none" }}>
             <Label className="text-lg font-semibold text-gray-900 flex items-center gap-2 dark:text-white">
               <div className="w-2 h-2 bg-green-500 rounded-full"></div>
               Voice Type
@@ -162,6 +164,71 @@ export default function ConfigurationPage() {
               </div>
             </RadioGroup>
           </div>
+
+          {/* Voice Selection */}
+          <div className="space-y-4" style={{ display: config.aiType === "advanced" ? "block" : "none" }}>
+            <Label className="text-lg font-semibold text-gray-900 flex items-center gap-2 dark:text-white">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              Voice Type
+            </Label>
+            <RadioGroup
+              value={config.voice}
+              onValueChange={(value) => handleConfigChange("voice", value)}
+              className="grid grid-cols-2 gap-4"
+            >
+              <div className="flex items-center space-x-2 p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 transition-colors">
+                <RadioGroupItem value="Y5oW6g8hng3zAbclT1hH" id="woman" />
+                <Label htmlFor="woman" className="flex-1 cursor-pointer">
+                  <div className="font-medium flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    Shea
+                  </div>
+                  <div className="text-sm text-gray-500">Middle Aged alto indonesian</div>
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 transition-colors">
+                <RadioGroupItem value="gP7FRCgEZ8Lr3rnyGgpw" id="man" />
+                <Label htmlFor="man" className="flex-1 cursor-pointer">
+                  <div className="font-medium flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    Andra
+                  </div>
+                  <div className="text-sm text-gray-500">indonesian javanese male</div>
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 transition-colors">
+                <RadioGroupItem value="c470sxKWDq6tA74TL3yB" id="man" />
+                <Label htmlFor="man" className="flex-1 cursor-pointer">
+                  <div className="font-medium flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    Kennisa
+                  </div>
+                  <div className="text-sm text-gray-500">female voice over artist</div>
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 transition-colors">
+                <RadioGroupItem value="RWiGLY9uXI70QL540WNd" id="man" />
+                <Label htmlFor="man" className="flex-1 cursor-pointer">
+                  <div className="font-medium flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    Putra
+                  </div>
+                  <div className="text-sm text-gray-500">Fiery indonesian young man</div>
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2 p-4 border-2 border-gray-200 rounded-lg hover:border-green-300 transition-colors">
+                <RadioGroupItem value="iWydkXKoiVtvdn4vLKp9" id="man" />
+                <Label htmlFor="man" className="flex-1 cursor-pointer">
+                  <div className="font-medium flex items-center gap-2">
+                    <Mic className="w-4 h-4" />
+                    Cahaya
+                  </div>
+                  <div className="text-sm text-gray-500">Trendy young female</div>
+                </Label>
+              </div>
+            </RadioGroup>
+          </div>
+
 
           {/* Continue Button */}
           <div className="pt-6">
